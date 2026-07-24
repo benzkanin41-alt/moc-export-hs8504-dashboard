@@ -540,16 +540,23 @@
     const x = (sort) => pad.left + (xMax === xMin ? plotW / 2 : ((sort - xMin) / (xMax - xMin)) * plotW);
     const y = (value) => pad.top + (1 - (value - yMin) / (yMax - yMin)) * plotH;
     const periodTicks = series[0].points;
-    const tickStep = Math.max(1, Math.ceil(periodTicks.length / 8));
+    const availableWidth = Math.max(320, container.clientWidth || width);
+    const maxTickCount = Math.max(2, Math.min(8, Math.floor(availableWidth / 96)));
+    const tickCount = Math.min(periodTicks.length, maxTickCount);
+    const tickIndexes = tickCount === 1
+      ? [0]
+      : Array.from({ length: tickCount }, (_, index) => Math.round((index * (periodTicks.length - 1)) / (tickCount - 1)));
     const yTicks = Array.from({ length: 5 }, (_, index) => yMin + ((yMax - yMin) * index) / 4);
 
     const grid = yTicks
       .map((tick) => `<line class="grid-line" x1="${pad.left}" x2="${width - pad.right}" y1="${y(tick)}" y2="${y(tick)}"></line>
         <text x="${pad.left - 8}" y="${y(tick) + 4}" text-anchor="end">${options.percent ? nf0.format(tick) + "%" : formatCompact(tick)}</text>`)
       .join("");
-    const xTicks = periodTicks
-      .filter((_, index) => index % tickStep === 0 || index === periodTicks.length - 1)
-      .map((point) => `<text x="${x(point.periodSort)}" y="${height - 28}" text-anchor="middle">${escapeHtml(point.periodLabel)}</text>`)
+    const xTicks = tickIndexes
+      .map((index) => {
+        const point = periodTicks[index];
+        return `<text x="${x(point.periodSort)}" y="${height - 28}" text-anchor="middle">${escapeHtml(point.periodLabel)}</text>`;
+      })
       .join("");
     const zeroLine = options.percent && yMin < 0 && yMax > 0 ? `<line class="zero-line" x1="${pad.left}" x2="${width - pad.right}" y1="${y(0)}" y2="${y(0)}"></line>` : "";
 
