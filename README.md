@@ -18,13 +18,13 @@ https://benzkanin41-alt.github.io/moc-export-hs8504-dashboard/
 - HS Code: `8504`
 - HS version: `2022`
 - Product name from MOC: `8504 : หม้อแปลงไฟฟ้า เครื่องเปลี่ยนไฟฟ้าชนิดอยู่คงที่ (สแตติกคอนเวอร์เตอร์) (เช่น เครื่องกลับกระแสไฟฟ้า) และตัวเหนี่ยวนา`
-- Coverage: `2021-01` ถึง `2026-06`
-- Latest source month: `มิ.ย. 2569`
+- Coverage: `2021-01` ถึง `2026-07`
+- Latest source month: `ก.ค. 2569`
 
 ## Validation
 
-- Months fetched: `66`
-- Country-month rows: `7,176`
+- Months fetched: `67`
+- Country-month rows: `7,287`
 - Max value reconciliation diff: `0.0`
 - Max quantity reconciliation diff: `0.0`
 - Unmapped country IDs: none
