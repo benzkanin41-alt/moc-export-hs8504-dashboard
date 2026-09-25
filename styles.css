@@ -99,6 +99,10 @@ h2 {
   white-space: pre-line;
 }
 
+.head-copy .subtle {
+  margin-top: 6px;
+}
+
 .head-actions {
   display: flex;
   flex-wrap: wrap;

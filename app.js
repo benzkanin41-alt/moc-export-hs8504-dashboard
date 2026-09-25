@@ -534,6 +534,11 @@
     const yPad = (yMax - yMin) * 0.08;
     yMin -= yPad;
     yMax += yPad;
+    const yTicks = Array.from({ length: 5 }, (_, index) => yMin + ((yMax - yMin) * index) / 4);
+    const yTickLabels = yTicks.map((tick) => options.percent ? nf0.format(tick) + "%" : formatCompact(tick));
+    const axisMeasure = document.createElement("canvas").getContext("2d");
+    axisMeasure.font = '12px "Segoe UI", Tahoma, Arial, sans-serif';
+    pad.left = Math.max(pad.left, Math.ceil(Math.max(...yTickLabels.map((label) => axisMeasure.measureText(label).width)) + 16));
 
     const plotW = width - pad.left - pad.right;
     const plotH = height - pad.top - pad.bottom;
@@ -546,16 +551,16 @@
     const tickIndexes = tickCount === 1
       ? [0]
       : Array.from({ length: tickCount }, (_, index) => Math.round((index * (periodTicks.length - 1)) / (tickCount - 1)));
-    const yTicks = Array.from({ length: 5 }, (_, index) => yMin + ((yMax - yMin) * index) / 4);
 
     const grid = yTicks
-      .map((tick) => `<line class="grid-line" x1="${pad.left}" x2="${width - pad.right}" y1="${y(tick)}" y2="${y(tick)}"></line>
-        <text x="${pad.left - 8}" y="${y(tick) + 4}" text-anchor="end">${options.percent ? nf0.format(tick) + "%" : formatCompact(tick)}</text>`)
+      .map((tick, index) => `<line class="grid-line" x1="${pad.left}" x2="${width - pad.right}" y1="${y(tick)}" y2="${y(tick)}"></line>
+        <text x="${pad.left - 8}" y="${y(tick) + 4}" text-anchor="end">${yTickLabels[index]}</text>`)
       .join("");
     const xTicks = tickIndexes
       .map((index) => {
         const point = periodTicks[index];
-        return `<text x="${x(point.periodSort)}" y="${height - 28}" text-anchor="middle">${escapeHtml(point.periodLabel)}</text>`;
+        const anchor = tickIndexes.length > 1 && index === periodTicks.length - 1 ? "end" : "middle";
+        return `<text x="${x(point.periodSort)}" y="${height - 28}" text-anchor="${anchor}">${escapeHtml(point.periodLabel)}</text>`;
       })
       .join("");
     const zeroLine = options.percent && yMin < 0 && yMax > 0 ? `<line class="zero-line" x1="${pad.left}" x2="${width - pad.right}" y1="${y(0)}" y2="${y(0)}"></line>` : "";
