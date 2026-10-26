@@ -723,6 +723,11 @@
     const meta = DATA.metadata;
     const validation = DATA.validation;
     const hasQuantity = quantityIsReported();
+    const partials = [];
+    if (meta.latestMonth % 3 !== 0) {
+      partials.push(`Q${Math.floor((meta.latestMonth - 1) / 3) + 1} ${toThaiYear(meta.latestYear)} ยังไม่ครบไตรมาส`);
+    }
+    if (meta.latestMonth < 12) partials.push(`ปี ${toThaiYear(meta.latestYear)} ยังไม่ครบปี`);
     const sourceItems = [
       ["Source", meta.source],
       ["Endpoint", meta.endpoint],
@@ -732,7 +737,7 @@
       ["Rows", `${validation.countryRows} country-month rows`],
       ["Reconciliation", `max value diff ${formatNumber(validation.maxAbsValueDiff, 0)} | max quantity diff ${formatNumber(validation.maxAbsQuantityDiff, 0)}`],
       ["Quantity field", hasQuantity ? meta.quantityUnit : "MOC คืนค่า QuantityMonth = 0 ทุกเดือนสำหรับ HS ระดับนี้"],
-      ["Current partials", `Q${Math.floor((meta.latestMonth - 1) / 3) + 1} ${toThaiYear(meta.latestYear)} และปี ${toThaiYear(meta.latestYear)} ยังไม่ครบปี`],
+      ["Current partials", partials.length ? partials.join(" | ") : "ไม่มีงวดที่ยังไม่ครบ"],
     ];
     els.sourceDetails.innerHTML = sourceItems
       .map((item) => `<div class="source-item"><span>${escapeHtml(item[0])}</span><strong>${escapeHtml(item[1])}</strong></div>`)
